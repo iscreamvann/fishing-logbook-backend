@@ -1,9 +1,8 @@
-const { Fish } = require('../models');
 
 // Fetches all fish entries in the logbook
 const getAllFish = async (req, res) => {
   try {
-    const fishEntries = await Fish.findAll(); // Fetch all fish entries from the database
+    const fishEntries = [] // Fetch all fish entries from the database
     return res.status(200).json({ fish: fishEntries });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -15,7 +14,14 @@ const createFish = async (req, res) => {
   const { breed, weight, dateAdded, location, catchBait } = req.body;
   
   try {
-    const newFish = await Fish.create({ breed, weight, dateAdded, location, catchBait });
+    // const newFish = {};
+    const newFish = await dbClient.fish.create({
+        data: {
+          content: content,
+          userId: id
+        }
+      })
+    
     return res.status(201).json({ fish: newFish });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -28,7 +34,7 @@ const updateFish = async (req, res) => {
   const { breed, weight, dateAdded, location, catchBait } = req.body;
   
   try {
-    const fishToUpdate = await Fish.findByPk(id);
+    const fishToUpdate = {};
     if (!fishToUpdate) {
       return res.status(404).json({ error: "Fish not found" });
     }
@@ -39,7 +45,7 @@ const updateFish = async (req, res) => {
     fishToUpdate.location = location;
     fishToUpdate.catchBait = catchBait;
     
-    await fishToUpdate.save();
+    // await fishToUpdate.save();
     
     return res.status(200).json({ fish: fishToUpdate });
   } catch (e) {
@@ -52,12 +58,12 @@ const deleteFish = async (req, res) => {
   const { id } = req.params;
   
   try {
-    const fishToDelete = await Fish.findByPk(id);
+    const fishToDelete = {};
     if (!fishToDelete) {
       return res.status(404).json({ error: "Fish not found" });
     }
     
-    await fishToDelete.destroy();
+    // await fishToDelete.destroy();
     return res.status(200).json({ message: "Fish deleted successfully" });
   } catch (e) {
     res.status(500).json({ error: e.message });

@@ -1,11 +1,11 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user'); // Assuming you have a User model defined
-const dotenv = require('dotenv');
+import bcrypt from 'bcryptjs';
+import jwt from'jsonwebtoken';
+// const User = require('../models/user'); // Assuming you have a User model defined
+import dotenv from 'dotenv';
 
 dotenv.config(); // Load environment variables
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
   const { username, password } = req.body;
 
   // Validate input
@@ -15,7 +15,7 @@ const login = async (req, res) => {
 
   try {
     // Find the user by username
-    const user = await User.findOne({ where: { username } });
+    const user = {};
     
     if (!user) {
       return res.status(401).json({ error: "Invalid credentials" });
@@ -42,6 +42,3 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = {
-  login
-};
