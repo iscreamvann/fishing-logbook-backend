@@ -1,10 +1,5 @@
-const express = require("express");
-const {
-  getAllFish,
-  createFish,
-  updateFish,
-  deleteFish
-} = require('../controllers/fishController');
+import express from "express";
+import { getAllFish, createFish, updateFish, deleteFish } from '../controllers/fishController.js';
 
 const router = express.Router();
 
@@ -20,4 +15,5 @@ router.put("/:id", updateFish);
 // Route to delete a fish entry by ID
 router.delete("/:id", deleteFish);
 
-module.exports = router;
+export default router;
+
