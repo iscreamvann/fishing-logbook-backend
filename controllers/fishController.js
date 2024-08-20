@@ -47,7 +47,13 @@ export const getAllFish = async (req, res) => {
   
   // Adds a new fish entry to the logbook
   export const createFish = async (req, res) => {
-    const { name, breed, weight, dateAdded, location, catchBait } = req.body;
+    const { name, breed, weight, location, catchBait } = req.body;
+
+    const token = jwt.decode(
+      req.headers.authorization.replace("Bearer ", ""),
+      process.env.JWT_SECRET
+    );
+    console.log("token", token)
   
     try {
       // const newFish = {};
@@ -56,10 +62,10 @@ export const getAllFish = async (req, res) => {
           name: name,
           breed: breed,
           weight: weight,
-          dateAdded: dateAdded,
+          // dateAdded: dateAdded,
           location: location,
           catchBait: catchBait,
-          userId: 1
+          userId: token.id
         },
       });
   
@@ -73,6 +79,8 @@ export const getAllFish = async (req, res) => {
   export const updateFish = async (req, res) => {
     const { id } = req.params;
     const { breed, weight, dateAdded, location, catchBait } = req.body;
+
+    
   
     try {
       const fishToUpdate = {}; // Fetch fish entry by id
