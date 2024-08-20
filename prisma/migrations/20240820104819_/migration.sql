@@ -21,8 +21,9 @@ CREATE TABLE "Profile" (
 -- CreateTable
 CREATE TABLE "Fish" (
     "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
     "breed" TEXT NOT NULL,
-    "weight" INTEGER NOT NULL,
+    "weight" DOUBLE PRECISION NOT NULL,
     "location" TEXT NOT NULL,
     "catchBait" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,

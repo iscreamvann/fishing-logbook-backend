@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://test-2_owner:FZydwOWz6H4t@ep-falling-brook-a5myogbo.us-east-2.aws.neon.tech/test-2?sslmode=require"
 }
 
 model User {
@@ -30,8 +30,9 @@ model Profile {
 
 model Fish {
   id        Int       @id @default(autoincrement())
+  name      String
   breed     String
-  weight    Int
+  weight    Float
   location  String
   catchBait String
   userId    Int
