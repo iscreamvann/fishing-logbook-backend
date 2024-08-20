@@ -1,8 +1,21 @@
+// import dbClient from "../utils/dbClient"
+// Mock data
+
+const AllFishMock = [
+  {
+    name: "biggy mcbigfish", breed: "Carp", weight: 1.5, dateAdded: "2024-08-20T09:02:58Z", location: "Milton Keynes", catchBait: "Mealworm"
+  },
+  {
+    name: "Smally mcmidget", breed: "Guppy", weight: 0.01, dateAdded: "2024-08-10T09:02:58Z", location: "Milton Keynes", catchBait: "Hands"
+  }
+]
+
+
 // Fetches all fish entries in the logbook
 export const getAllFish = async (req, res) => {
     try {
       const fishEntries = []; // Fetch all fish entries from the database
-      return res.status(200).json({ fish: fishEntries });
+      return res.status(200).json({ fish: AllFishMock });
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
