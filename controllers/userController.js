@@ -1,4 +1,4 @@
-import dbClient from '../dbClient.js';
+import dbClient from "../utils/dbClient.js"
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 

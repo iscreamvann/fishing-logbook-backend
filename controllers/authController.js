@@ -4,17 +4,48 @@ import jwt from'jsonwebtoken';
 // const User = require('../models/user'); // Assuming you have a User model defined
 import dotenv from 'dotenv';
 
-import prisma from '@prisma/client'
-
-if (process.env.NODE_ENV === 'test') {
-  // process.env.DATABASE_URL = process.env.TEST_DATABASE_URL
-  console.log(`Connected to DB instance: ${process.env.DATABASE_URL}`)
-}
-
-const dbClient = new prisma.PrismaClient()
-
+import dbClient from "../utils/dbClient.js"
 
 dotenv.config(); // Load environment variables
+
+export const register = async (req, res) => {
+  const { email, password, firstName, lastName } = req.body;
+
+  // Validate input
+  if (!email || !password || !firstName || !lastName) {
+    return res.status(400).json({ error: "Missing fields in request body" });
+  }
+
+  try {
+    const user = await dbClient.user.create({
+      data: {
+        email,
+        password: await bcrypt.hash(password, 8),
+        profile: {
+          create: {
+            firstName,
+            lastName,
+          }
+        }
+      },
+      include: {
+        profile: true
+      }
+    })
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, firstName: user.profile.firstName, lastName: user.profile.lastName },
+      process.env.JWT_SECRET,
+      // { expiresIn: '1h' }
+    );
+
+    return res.status(200).json({ message: "User registered", token, user: { id: user.id, email: user.email, firstName: user.profile.firstName, lastName: user.profile.lastName }});
+  }
+  catch (e) {
+    console.log(e)
+    res.status(500).json({ error: e.message });
+  }
+}
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -27,7 +58,7 @@ export const login = async (req, res) => {
   try {
     // Find the user by username
     // const user = {password: ""};
-    console.log("email", email)
+    
     const user = await dbClient.user.findUnique({
       where:{
           email: email
@@ -44,7 +75,8 @@ export const login = async (req, res) => {
 
     // Check if the password is correct
     // const isPasswordValid = await bcrypt.compare(password, user.password);
-    const isPasswordValid = password == "test123"
+    const isPasswordValid = await bcrypt.compareSync(password, user.password)
+
 
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid credentials" });

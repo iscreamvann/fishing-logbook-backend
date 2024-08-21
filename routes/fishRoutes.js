@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllFish, createFish, updateFish, deleteFish } from '../controllers/fishController.js';
+import { getAllFish, createFish, getLeaders, deleteFish } from '../controllers/fishController.js';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.get("/", getAllFish);
 router.post("/", createFish);
 
 // Route to update an existing fish entry by ID
-router.put("/:id", updateFish);
+router.get("/leaderboard", getLeaders);
 
 // Route to delete a fish entry by ID
 router.delete("/:id", deleteFish);
