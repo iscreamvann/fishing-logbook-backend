@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from'jsonwebtoken';
-// import getUserDb from "../domains/auth"
-// const User = require('../models/user'); // Assuming you have a User model defined
+import { Prisma } from '@prisma/client';
 import dotenv from 'dotenv';
 
 import dbClient from "../utils/dbClient.js"
@@ -41,9 +40,18 @@ export const register = async (req, res) => {
 
     return res.status(200).json({ message: "User registered", token, user: { id: user.id, email: user.email, firstName: user.profile.firstName, lastName: user.profile.lastName }});
   }
-  catch (e) {
-    console.log(e)
-    res.status(500).json({ error: e.message });
+  catch (error) {
+    console.log(error)
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        console.log('A user with this email already exists.');
+        res.status(500).json({ error: 'A user with this email already exists.' });
+      }
+    }
+    else{
+      res.status(500).json({ error: error.message });
+    }
   }
 }
 
@@ -56,8 +64,6 @@ export const login = async (req, res) => {
   }
 
   try {
-    // Find the user by username
-    // const user = {password: ""};
     
     const user = await dbClient.user.findUnique({
       where:{
@@ -74,7 +80,6 @@ export const login = async (req, res) => {
 
 
     // Check if the password is correct
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
     const isPasswordValid = await bcrypt.compareSync(password, user.password)
 
 
@@ -86,14 +91,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, email: user.email, firstName: user.profile.firstName, lastName: user.profile.lastName },
       process.env.JWT_SECRET,
-      // { expiresIn: '1h' }
     );
-
-    // const decoded = jwt.decode(
-    //   n,
-    //   process.env.JWT_SECRET
-    // );
-    // console.log("token", decoded)
 
     // Respond with the token
     return res.status(200).json({ message: "Logged in", token, user: { id: user.id, email: user.email, firstName: user.profile.firstName, lastName: user.profile.lastName }});

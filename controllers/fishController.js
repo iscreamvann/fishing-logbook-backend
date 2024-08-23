@@ -16,20 +16,17 @@ const AllFishMock = [
 
 // Fetches all fish entries in the logbook
 export const getAllFish = async (req, res) => {
-  console.log("token:", req.headers.authorization)
 
   const token = jwt.decode(
     req.headers.authorization.replace("Bearer ", ""),
     process.env.JWT_SECRET
   );
-  console.log("token", token)
     try {
       const newFish = await dbClient.fish.findMany({
         where: {
           userId: token.id
         }
     })
-      const fishEntries = []; // Fetch all fish entries from the database
       return res.status(200).json({ fish: newFish });
     } catch (e) {
       res.status(500).json({ error: e.message });
@@ -44,16 +41,13 @@ export const getAllFish = async (req, res) => {
       req.headers.authorization.replace("Bearer ", ""),
       process.env.JWT_SECRET
     );
-    console.log("token", token)
   
     try {
-      // const newFish = {};
       const newFish = await dbClient.fish.create({
         data: {
           name: name,
           breed: breed,
           weight: weight,
-          // dateAdded: dateAdded,
           location: location,
           catchBait: catchBait,
           userId: token.id
@@ -91,7 +85,6 @@ export const getAllFish = async (req, res) => {
         },
         take: 5,
       });
-      const fishEntries = []; // Fetch all fish entries from the database
       return res.status(200).json({ leaders: usersWithFishCount });
     } catch (e) {
       res.status(500).json({ error: e.message });
@@ -112,7 +105,6 @@ export const getAllFish = async (req, res) => {
         return res.status(404).json({ error: "Fish not found" });
       }
   
-      // await fishToDelete.destroy();
       return res.status(200).json({ message: "Fish deleted successfully" });
     } catch (e) {
       res.status(500).json({ error: e.message });

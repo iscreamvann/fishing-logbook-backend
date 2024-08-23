@@ -2,6 +2,7 @@
 import express from "express";
 import authRouter from "./routes/authRoutes.js";
 import fishRouter from "./routes/fishRoutes.js";
+import {authMiddleware} from "./middleware/authMiddleware.js"
 
 import cors from 'cors'
 import morgan from 'morgan'
@@ -16,15 +17,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.get('/', (req, res) => {
-//   res.send('Hello from the backend!');
-// });
-
 app.use("/auth", authRouter);
+app.use("/fish", authMiddleware);
 app.use("/fish", fishRouter);
-app.get("/test", (req, res) => {
-res.status(200).json({message: "test"})
-})
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
